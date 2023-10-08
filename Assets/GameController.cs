@@ -1,6 +1,8 @@
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
+using UnityEngine.SceneManagement;
 
 namespace SpatialPartitionPattern
 {
@@ -29,17 +31,24 @@ namespace SpatialPartitionPattern
         int cellSize = 10;
 
         //Number of soldiers on each team
-        int numberOfSoldiers = 100;
+        public int numberOfSoldiers = 100;
 
         //The Spatial Partition grid
         Grid grid;
 
-        private float curTime;
+        public float curTime = 0;
+
+        public TextMeshProUGUI delay;
+
+        public SoldiersNum soldiersNum;
 
         void Start()
         {
             //Create a new grid
             grid = new Grid((int)mapWidth, cellSize);
+
+            soldiersNum = FindAnyObjectByType<SoldiersNum>();
+            numberOfSoldiers = soldiersNum.numberOfSoldiers;
 
             //Add random enemies and friendly and store them in a list
             for (int i = 0; i < numberOfSoldiers; i++)
@@ -74,8 +83,8 @@ namespace SpatialPartitionPattern
 
         void Update()
         {
+            delay.text = "Delay: " + ((Time.time - curTime)*1000).ToString() + "ms";
             curTime = Time.time;
-            Debug.Log(curTime);
             //Move the enemies
             for (int i = 0; i < enemySoldiers.Count; i++)
             {
@@ -111,7 +120,6 @@ namespace SpatialPartitionPattern
                     friendlySoldiers[i].Move(closestEnemy);
                 }
             }
-            Debug.Log(Time.time - curTime);
         }
 
 
@@ -138,6 +146,40 @@ namespace SpatialPartitionPattern
             }
 
             return closestEnemy;
+        }
+
+        public void addSoldiers()
+        {
+            numberOfSoldiers += 100;
+            soldiersNum.numberOfSoldiers = numberOfSoldiers;
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        }
+
+        public void addMoreSoldiers()
+        {
+            numberOfSoldiers += 1000;
+            soldiersNum.numberOfSoldiers = numberOfSoldiers;
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        }
+
+        public void subtractSoldiers()
+        {
+            if (numberOfSoldiers > 0)
+            {
+                numberOfSoldiers -= 100;
+                soldiersNum.numberOfSoldiers = numberOfSoldiers;
+                SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+            }
+        }
+
+        public void subtractMoreSoldiers()
+        {
+            if (numberOfSoldiers > 0)
+            {
+                numberOfSoldiers -= 1000;
+                soldiersNum.numberOfSoldiers = numberOfSoldiers;
+                SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+            }
         }
     }
 }
