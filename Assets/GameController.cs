@@ -42,6 +42,8 @@ namespace SpatialPartitionPattern
 
         public SoldiersNum soldiersNum;
 
+        public bool spatialPartition;
+
         void Start()
         {
             //Create a new grid
@@ -103,10 +105,11 @@ namespace SpatialPartitionPattern
             //For each friendly, find the closest enemy and change its color and chase it
             for (int i = 0; i < friendlySoldiers.Count; i++)
             {
-                //Soldier closestEnemy = FindClosestEnemySlow(friendlySoldiers[i]);
-
-                //The fast version with spatial partition
-                Soldier closestEnemy = grid.FindClosestEnemy(friendlySoldiers[i]);
+                Soldier closestEnemy;
+                if(!spatialPartition) //The slow version
+                    closestEnemy = FindClosestEnemySlow(friendlySoldiers[i]);
+                else //The fast version with spatial partition
+                    closestEnemy = grid.FindClosestEnemy(friendlySoldiers[i]);
 
                 //If we found an enemy
                 if (closestEnemy != null)
@@ -180,6 +183,14 @@ namespace SpatialPartitionPattern
                 soldiersNum.numberOfSoldiers = numberOfSoldiers;
                 SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
             }
+        }
+
+        public void toggleSpatialPartition()
+        {
+            if(spatialPartition)
+                spatialPartition = false;
+            else
+                spatialPartition = true;
         }
     }
 }
